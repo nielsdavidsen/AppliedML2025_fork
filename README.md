@@ -1,4 +1,4 @@
-# AppliedML2025 - Code Repository (Instructors Folder [private])
+# AppliedML2025 - Code Repository
 
 GitHub repository for code used in the course Applied Machine Learning 2025 at University of Copenhagen.
 
