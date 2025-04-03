@@ -1,7 +1,7 @@
 
 [return to the main page](../README.md)
 
-# AppML2024 - Instructions for installing the repository locally
+# AppML2025 - Instructions for installing the repository locally
 ---
 
 
