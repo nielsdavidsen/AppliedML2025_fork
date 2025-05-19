@@ -1,0 +1,1 @@
+{"num_leaves": 53, "max_depth": 36, "learning_rate": 0.04048383383512557, "min_data_in_leaf": 26, "n_estimators": 494, "objective": "regression", "boosting_type": "gbdt", "metric": "rmse", "verbose": -1, "early_stopping_rounds": 20}

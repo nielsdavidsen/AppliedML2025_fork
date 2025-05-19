@@ -1,0 +1,44 @@
+My general approach was to construct a tree using LightGBM and a Neural Network using torch for both regression and classification. I calculated both SHAP-values, Permutation Importance and LightGBM feature ranking to determine the best parameters fit for each of the tasks. 
+For clustering I used a Laplacian Score feature ranking to determine the 7 most important features for clustering. I then used UMAP and t-SNE (not at the same time) to reduce dimensionality of the data. Finally I clustered the dim. reduced data using methods like K-means, DBSCAN and Spectral Clustering. Only certain methods are described here, as these were the ones that worked the best
+
+1. Classification_NielsDavidsen_LightGBMbdt.csv
+Algorithm: LightGBM Classifier
+Key HP: num_leaves = 30, learning_rate = 0.1 (default parameters)
+HP optimisation: I tried using Optuna to optimise the parameters, it only got worse than the result with the default parameters.
+LogLoss on validation set: 0.0669 (binary cross entropy)
+Comments: I spent a lot of time doing Optuna HPO but with no luck. I was worried about overfitting but I matched distributions of the training data and the test data, and even thought this  is not a bulletproof test, the two distributions looked very similar, and had roughly the same percentage of electrons in the data. If the test data and the training data is obtained in the same way, this is a good sign.
+
+2. Classification_NielsDavidsen_TorchNN.csv
+Algorithm: Torch Neural Network
+Key HP: One hidden layer and one dropout layer, ReLU activation between layers and sigmoidal function for binary results. Adam optimiser used with LR=0.001
+HP optimisation: I tinkered with the number of hidden layers and nodes in each layer, but found this setup to be sufficient.
+LogLoss on validation set: 0.1047 (Binary Cross Entropy)
+Comments: I optimised the number of Epochs by constructing a Train / Validation loss plot and using early a patience algorithm I Ensured to stop the training when no drastic improvement was found (Validation loss decrease). Again I cross referenced the predicted distribution of the test data with the training data distribution and I was satisfied with the results.
+
+3. Regression_NielsDavidsen_LightGBMreg.csv
+Algorithm: LightGBM Regressor
+Key HP: num_leaves = 53, max_depth = 36, learning_rate = 0.04, min_data_in_leaf = 26, n_estimators = 494
+HP optimisation: I again use Optuna, and this time I got a slight decrease in the RMSE after optimisation, so I used the optimised parameters (the ones above)
+MAE: 0.299
+Comments: Though I saw a slight decrease in the RMSE after optimisation, it was almost negligible compared to the amount of time it took. Like for classification I compared the distribution of predicted electron energy to the training data energy distribution (for only electrons) and the looked similar.
+
+4. Regression_NielsDavidsen_TorchNNreg.csv
+Algorithm: Torch Neural Network
+Key HP: Two hidden layers with 64 and 32 neurons in them respectively. ReLU activation between the layers. 1-neuron output for determining the energy
+HP optimisation:  I tinkered with the number of hidden layers and nodes in each layer, but found this setup to be sufficient.
+MAE: 0.446 (at early stopping)
+Comments: I optimised the number of Epochs by constructing a Train / Validation loss plot and using early a patience algorithm I Ensured to stop the training when no drastic improvement was found (Validation loss decrease). Again I cross referenced the predicted distribution of the test data (energy) with the training data distribution (of electron energy ONLY) and I was satisfied with the results.
+
+5. Clustering_NielsDavidsen_KmeansOnT-SNE.csv
+Algorithm: K-means (clustering) and t-SNE (dim. reduction)
+Key HP: t-SNE_params = {n_components = 2, perplexity = 30}, K-means_params = {n_clusters = 14}
+HP optimisation: I constructed an elbow plot using WCSS as a score to determine the best number of clusters. I also tried a lot of different parameters “Graduat Student Descent” for both t-SNE and K-Means but I ultimately valued the visualisation aspect, so I ended up with the parameters seen above.
+Data-scaling: Scaled the data using SKLearns StandardScaler
+
+6. Clustering_NielsDavidsen_SpectralClusteringOnUMAP.csv
+Algorithm: Spectral Clustering and UMAP
+Key HP: UMAP_params = {n_neighbors = 5, min_dist = 0.2}, SpectralClustering_params = {n_clusters = 14}
+HP optimisation: I constructed an elbow plot using the Silhouette score to determine the best number of clusters from the largest silhouette score. I also tried a lot of different parameters “Graduat Student Descent” for both UAMP and SpectralClustering but I ultimately valued the visualisation aspect, so I ended up with the parameters seen above.
+Data-Scaling: Scaled the data using SKLearns StandardScaler
+
+	 
